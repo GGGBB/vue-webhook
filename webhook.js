@@ -26,10 +26,10 @@ let server = http.createServer(function(req, res){
         let payload = JSON.parse(body)
         let child = spawn('sh', [`./${payload.repository.name}.sh`])
         child.stdout.on('data', function(data){
-          console.log('stdout---------->' + data)
+          console.log('stdout---y--y--y--->' + data)
         })
         child.stderr.on('data', function(data){
-          console.log('stderr---------->' + data)
+          console.log('stderr---x--x--x--->' + data)
         })
         child.on('exit', function(data){
           console.log('child process exited with code---------->' + data)

@@ -23,7 +23,7 @@ let server = http.createServer(function(req, res){
       res.end(JSON.stringify({ok: true}))
 
       if(event == 'push'){
-        let payload = JSON.parse(bodyi)
+        let payload = JSON.parse(body)
         let child = spawn('sh', ['./${payload.repository.name}.sh'])
         let buffers = []
         child.stdout.on('data', function(buffer){

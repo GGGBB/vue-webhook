@@ -67,7 +67,7 @@ let server = http.createServer(function(req, res){
             <h2>部署人: ${payload.pusher.name}</h2>
             <h2>部署邮箱: ${payload.pusher.email}</h2>
             <h2>提交信息: ${payload.head_commit&&payload.head_commit['message']}</h2>
-            <h2>布署日志: ${logs.toString().replace(",", '<br/>')}</h2>
+            <h2>布署日志: ${logs.toString().replace(/,/g , '<br/>')}</h2>
           `)
         })
       }

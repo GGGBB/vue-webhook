@@ -16,7 +16,7 @@ function sendMail(message) {
     subject: '部署通知',
     html: message
   }
-  transporter.sendMail(mailoptions, (error, info) => {
+  transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error)
     }

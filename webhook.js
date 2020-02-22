@@ -2,6 +2,7 @@ let http = require('http')
 let crypto = require('crypto')
 let {spawn} = require('child_process')
 let SECRET = '123456'
+let sendMail = require('./sendMail')
 /**
 * 扩展Date的Format函数
 * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
@@ -46,14 +47,28 @@ let server = http.createServer(function(req, res){
       if(event == 'push'){
         let payload = JSON.parse(body)
         let child = spawn('sh', [`./${payload.repository.name}.sh`])
+        let logs = []
         child.stdout.on('data', function(data){
-          console.log((new Date()).Format("yyyy-MM-dd hh:mm:ss") + '--stdout---y--y--y--->' + data)
+          let log = (new Date()).Format("yyyy-MM-dd hh:mm:ss") + '--stdout---y--y--y--->' + data
+          logs.push(log)
+          console.log(log)
         })
         child.stderr.on('data', function(data){
-          console.log((new Date()).Format("yyyy-MM-dd hh:mm:ss") + '--stderr---x--x--x--->' + data)
+          let log = (new Date()).Format("yyyy-MM-dd hh:mm:ss") + '--stderr---x--x--x--->' + data
+          logs.push(log)
+          console.log(log)
         })
         child.on('exit', function(data){
-          console.log((new Date()).Format("yyyy-MM-dd hh:mm:ss") + '--child process exited with code---------->' + data)
+          let log = ((new Date()).Format("yyyy-MM-dd hh:mm:ss") + '--child process exited with code---------->' + data)
+          logs.push(log)
+          console.log(log)
+          sendMail(`
+            <h1>部署日期: ${(new Date()).Format("yyyy-MM-dd hh:mm:ss")}</h1>
+            <h2>部署人: ${payload.pusher.name}</h2>
+            <h2>部署邮箱: ${payload.pusher.email}</h2>
+            <h2>提交信息: ${payload.head_commit&&payload.head_commit['message']}</h2>
+            <h2>布署日志: ${logs.replace("\r\n", '<br/>')}</h2>
+          `)
         })
       }
     })

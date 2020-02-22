@@ -25,15 +25,14 @@ let server = http.createServer(function(req, res){
       if(event == 'push'){
         let payload = JSON.parse(body)
         let child = spawn('sh', [`./${payload.repository.name}.sh`])
-        let buffers = []
-        child.stdout.on('data', function(buffer){
-          buffers.push(buffer)
+        child.stdout.on('data', function(data){
+          console.log('stdout' + data)
         })
-        child.on('close', function(buffer){
-          buffers.push(buffer)
-          let log = Buffer.concat(buffers)
-          log = log.toString('utf8', 0, log.length-1)
-          console.log(log)
+        child.stderr.on('data', function(data){
+          console.log('stderr' + data)
+        })
+        child.on('exit', function(data){
+          console.log('child process exited with code' + data)
         })
       }
     })

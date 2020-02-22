@@ -29,9 +29,10 @@ let server = http.createServer(function(req, res){
         child.stdout.on('data', function(buffer){
           buffers.push(buffer)
         })
-        child.stdout.on('end', function(buffer){
+        child.on('close', function(buffer){
+          buffers.push(buffer)
           let log = Buffer.concat(buffers)
-          log = log.toString('utf8', 0, log.length)
+          log = log.toString('utf8', 0, log.length-1)
           console.log(log)
         })
       }
